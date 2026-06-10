@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.vite/
+*.log
+vite-dev*.txt
+_docx_extract/
+_docx_extract_new/
