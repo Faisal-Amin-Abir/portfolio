@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -11,6 +11,7 @@ import {
   Trophy,
   X,
 } from 'lucide-react'
+import FloatingDots from './FloatingDots'
 import { portfolioData as data } from './data'
 
 const navItems = [
@@ -20,140 +21,6 @@ const navItems = [
   { label: 'Gallery', id: 'gallery' },
   { label: 'Contact', id: 'contact' },
 ]
-
-const randomBetween = (min, max) => Math.random() * (max - min) + min
-
-function FloatingBubbles() {
-  const [bubbles, setBubbles] = useState([])
-  const [reduceMotion, setReduceMotion] = useState(() => {
-    if (typeof window === 'undefined') return false
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  })
-  const loopTimerRef = useRef(null)
-  const cleanupTimersRef = useRef(new Set())
-  const runningRef = useRef(false)
-  const nextIdRef = useRef(0)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined
-
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
-
-    const clearTimers = () => {
-      if (loopTimerRef.current !== null) {
-        window.clearTimeout(loopTimerRef.current)
-        loopTimerRef.current = null
-      }
-
-      cleanupTimersRef.current.forEach((timerId) => window.clearTimeout(timerId))
-      cleanupTimersRef.current.clear()
-    }
-
-    const removeBubble = (id) => {
-      setBubbles((current) => current.filter((bubble) => bubble.id !== id))
-    }
-
-    const spawnBubble = () => {
-      const smallScreen = window.innerWidth < 680
-      const id = nextIdRef.current + 1
-      nextIdRef.current = id
-      const size = randomBetween(smallScreen ? 8 : 10, smallScreen ? 18 : 28)
-      const duration = randomBetween(smallScreen ? 10 : 8, smallScreen ? 15 : 13)
-      const rise = -(window.innerHeight + randomBetween(120, 320))
-      const bubble = {
-        id,
-        style: {
-          '--bubble-size': `${size.toFixed(1)}px`,
-          '--bubble-left': `${randomBetween(0, 100).toFixed(2)}vw`,
-          '--bubble-drift-x': `${randomBetween(-90, 90).toFixed(1)}px`,
-          '--bubble-rise': `${rise.toFixed(1)}px`,
-          '--bubble-duration': `${duration.toFixed(2)}s`,
-          '--bubble-opacity': randomBetween(0.14, 0.34).toFixed(2),
-        },
-      }
-
-      setBubbles((current) => [...current.slice(-32), bubble])
-
-      const timerId = window.setTimeout(() => {
-        removeBubble(id)
-        cleanupTimersRef.current.delete(timerId)
-      }, duration * 1000 + 200)
-
-      cleanupTimersRef.current.add(timerId)
-    }
-
-    const scheduleSpawn = () => {
-      if (!runningRef.current) return
-      spawnBubble()
-
-      const nextDelay = randomBetween(500, 1100)
-      loopTimerRef.current = window.setTimeout(scheduleSpawn, nextDelay)
-    }
-
-    const start = () => {
-      if (runningRef.current) return
-      runningRef.current = true
-
-      for (let index = 0; index < 4; index += 1) {
-        spawnBubble()
-      }
-
-      scheduleSpawn()
-    }
-
-    const stop = (clearBubbles = true) => {
-      runningRef.current = false
-      clearTimers()
-      if (clearBubbles) {
-        setBubbles([])
-      }
-    }
-
-    const syncPreference = () => {
-      const prefersReduced = mediaQuery.matches
-      setReduceMotion(prefersReduced)
-      if (prefersReduced) {
-        stop()
-        return
-      }
-
-      start()
-    }
-
-    syncPreference()
-
-    const handlePreferenceChange = () => {
-      syncPreference()
-    }
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handlePreferenceChange)
-    } else {
-      mediaQuery.addListener(handlePreferenceChange)
-    }
-
-    return () => {
-      stop(false)
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handlePreferenceChange)
-      } else {
-        mediaQuery.removeListener(handlePreferenceChange)
-      }
-    }
-  }, [])
-
-  if (reduceMotion) {
-    return null
-  }
-
-  return (
-    <div className="floating-bubbles" aria-hidden="true">
-      {bubbles.map((bubble) => (
-        <span key={bubble.id} className="floating-bubble" style={bubble.style} />
-      ))}
-    </div>
-  )
-}
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -684,7 +551,7 @@ function App() {
 
   return (
     <>
-      <FloatingBubbles />
+      <FloatingDots />
       <div className="pointer-glow" />
       <Header />
       <main className="page-content">
