@@ -87,10 +87,7 @@ export default function StatsSection({ stats = defaultStats }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true)
-          observer.disconnect()
-        }
+        setIsVisible(entry.intersectionRatio >= 0.35)
       },
       {
         threshold: 0.35,

@@ -2940,8 +2940,10 @@ footer {
 .gallery-slider {
   position: relative;
   overflow: hidden;
+  width: min(100%, 1080px);
+  margin-inline: auto;
   border: 1px solid var(--line);
-  border-radius: 30px;
+  border-radius: 26px;
   background: #0b0b0d;
   transition:
     transform 0.28s ease,
@@ -2962,7 +2964,7 @@ footer {
 
 .gallery-slide {
   min-width: 100%;
-  height: min(67vw, 650px);
+  height: min(56vw, 560px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2980,9 +2982,9 @@ footer {
 .gallery-caption {
   display: grid;
   grid-template-columns: 70px 1fr auto;
-  gap: 25px;
+  gap: 22px;
   align-items: center;
-  padding: 25px 28px;
+  padding: 21px 24px;
   border-top: 1px solid var(--line);
 }
 
@@ -3014,8 +3016,8 @@ footer {
 }
 
 .gallery-controls button {
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -3041,7 +3043,7 @@ footer {
 .gallery-dots {
   display: flex;
   gap: 8px;
-  padding: 0 28px 24px 123px;
+  padding: 0 24px 20px 115px;
 }
 
 .gallery-dots button {
@@ -3310,8 +3312,8 @@ footer {
   }
 
   .gallery-slide {
-    height: 64vw;
-    min-height: 330px;
+    height: 57vw;
+    min-height: 300px;
   }
 
   .gallery-dots {
