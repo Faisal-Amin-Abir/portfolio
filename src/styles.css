@@ -1371,6 +1371,10 @@ footer {
     opacity: 1;
     transform: none;
   }
+
+  .gallery-track {
+    transition: none;
+  }
 }
 
 .hero {
@@ -2445,6 +2449,62 @@ footer {
   color: #aaa7a0;
 }
 
+.stats-section {
+  perspective: 1100px;
+}
+
+.stats-section .stat-card {
+  transform-origin: right center;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: translate3d(64px, 0, 0) rotateY(-20deg) rotateZ(2deg);
+  transition:
+    opacity 0.72s ease,
+    transform 0.72s cubic-bezier(0.18, 0.82, 0.18, 1);
+  transition-delay: var(--card-delay, 0ms);
+}
+
+.stats-section.is-visible .stat-card {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) rotateY(0) rotateZ(0);
+}
+
+.stat-card {
+  gap: 8px;
+}
+
+.stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  margin-bottom: auto;
+  color: inherit;
+  background: rgba(13, 13, 15, 0.08);
+}
+
+.cp-overview-main .stat-icon {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.stat-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.stat-label {
+  color: #6e6b65;
+  font-size: 12px;
+}
+
+.cp-overview-main .stat-label {
+  color: #aaa7a0;
+}
+
 .featured-recognition {
   position: relative;
   isolation: isolate;
@@ -2896,7 +2956,8 @@ footer {
 
 .gallery-track {
   display: flex;
-  transition: transform 0.65s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform;
+  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .gallery-slide {
@@ -3132,6 +3193,10 @@ footer {
     grid-template-columns: 1fr 1fr;
   }
 
+  .stats-section .stat-card {
+    transform: translate3d(42px, 0, 0) rotateY(-16deg) rotateZ(1.5deg);
+  }
+
   .featured-recognition {
     grid-template-columns: 1fr;
     gap: 22px;
@@ -3172,6 +3237,18 @@ footer {
 
   .cp-overview > div:nth-child(n + 3) {
     border-top: 1px solid #c9c6be;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-section .stat-card {
+    min-height: 118px;
+  }
+
+  .stats-section .stat-card {
+    transform: translate3d(30px, 0, 0) rotateY(-14deg) rotateZ(1deg);
   }
 
   .competition-groups {

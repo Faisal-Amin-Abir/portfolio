@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   ArrowRight,
   ArrowUpRight,
@@ -8,11 +8,11 @@ import {
   Copy,
   ExternalLink,
   Menu,
-  Trophy,
   X,
 } from 'lucide-react'
 import FloatingDots from './FloatingDots'
 import { portfolioData as data } from './data'
+import StatsSection from './StatsSection'
 
 const navItems = [
   { label: 'Competitive', id: 'competitive' },
@@ -215,25 +215,7 @@ function CompetitiveProgramming() {
         description="A detailed record of team and individual results across ICPC, national IUPCs, university contests, and online judges."
       />
 
-      <div className="cp-overview reveal">
-        <div className="cp-overview-main">
-          <Trophy size={28} />
-          <strong>20+ IUPCs</strong>
-          <span>Participated since 2022</span>
-        </div>
-        <div>
-          <strong>1850+</strong>
-          <span>Problems solved</span>
-        </div>
-        <div>
-          <strong>230+</strong>
-          <span>Online contests</span>
-        </div>
-        <div>
-          <strong>3×</strong>
-          <span>Intra-AIUB champion</span>
-        </div>
-      </div>
+      <StatsSection />
 
       <a
         className="featured-recognition reveal"
@@ -364,7 +346,53 @@ function Projects() {
 
 function Gallery() {
   const [activeSlide, setActiveSlide] = useState(0)
+  const [reduceMotion, setReduceMotion] = useState(() => {
+    if (typeof window === 'undefined') return false
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  })
+  const autoplayRef = useRef(0)
   const totalSlides = data.gallery.length
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined
+
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+    const syncPreference = () => {
+      setReduceMotion(mediaQuery.matches)
+    }
+
+    syncPreference()
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', syncPreference)
+    } else {
+      mediaQuery.addListener(syncPreference)
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', syncPreference)
+      } else {
+        mediaQuery.removeListener(syncPreference)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (reduceMotion || totalSlides < 2) return undefined
+
+    autoplayRef.current = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % totalSlides)
+    }, 4200)
+
+    return () => {
+      if (autoplayRef.current) {
+        window.clearInterval(autoplayRef.current)
+        autoplayRef.current = 0
+      }
+    }
+  }, [reduceMotion, totalSlides])
 
   const showPrevious = () => {
     setActiveSlide((current) => (current - 1 + totalSlides) % totalSlides)
@@ -385,7 +413,7 @@ function Gallery() {
       id="gallery"
       tabIndex="0"
       onKeyDown={handleKeyDown}
-      aria-label="Photo gallery. Use left and right arrow keys to change slides."
+      aria-label="Photo gallery. Slides rotate automatically, and you can use left and right arrow keys to change slides."
     >
       <SectionHeading
         index="04"
@@ -567,3 +595,7 @@ function App() {
 }
 
 export default App
+
+
+
+
